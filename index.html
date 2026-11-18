@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="AWS EC2 static website deployment demonstration with a responsive carousel.">
+  <title>AWS Cloud Deployment | Project 01</title>
+  <style>
+    :root { color-scheme: dark; --bg:#0b1220; --panel:#142238; --text:#edf5ff; --muted:#a8bad0; --accent:#64d6ff; }
+    * { box-sizing:border-box; }
+    body { margin:0; font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif; background:linear-gradient(145deg,#0b1220,#142640); color:var(--text); line-height:1.6; }
+    header,main,footer { max-width:1050px; margin:auto; padding:24px; }
+    header { display:flex; align-items:center; justify-content:space-between; gap:12px; }
+    .brand { font-weight:800; letter-spacing:.06em; }
+    .tag { border:1px solid #40627f; border-radius:999px; padding:5px 12px; color:var(--accent); font-size:.8rem; }
+    .hero { text-align:center; padding:48px 0 30px; }
+    h1 { font-size:clamp(2rem,5vw,3.7rem); line-height:1.15; margin:12px 0; }
+    .hero p { max-width:680px; margin:0 auto 24px; color:var(--muted); }
+    .eyebrow { color:var(--accent); text-transform:uppercase; font-weight:700; letter-spacing:.16em; }
+    .chips { display:flex; flex-wrap:wrap; gap:9px; justify-content:center; }
+    .chips span { background:#1d3652; padding:7px 13px; border-radius:999px; font-size:.9rem; }
+    .slider { position:relative; overflow:hidden; border:1px solid #35516e; border-radius:20px; background:var(--panel); box-shadow:0 22px 60px #0005; }
+    .slide { display:none; min-height:320px; padding:56px 60px; align-items:center; justify-content:center; text-align:center; flex-direction:column; background:radial-gradient(circle at 70% 15%,#246287 0,transparent 42%),linear-gradient(135deg,#183352,#101b2c); }
+    .slide.active { display:flex; }
+    .slide .symbol { font-size:4.5rem; margin-bottom:12px; }
+    .slide h2 { font-size:clamp(1.5rem,3vw,2.4rem); margin:0 0 8px; }
+    .slide p { max-width:560px; color:#d2e4f4; margin:0; }
+    .controls { display:flex; align-items:center; justify-content:center; gap:14px; padding:15px; }
+    button { cursor:pointer; color:var(--text); background:#264766; border:1px solid #50718d; padding:10px 17px; border-radius:10px; font:inherit; }
+    button:hover,button:focus-visible { background:#34648a; outline:2px solid var(--accent); outline-offset:2px; }
+    #counter { color:var(--muted); min-width:44px; text-align:center; }
+    .section-title { margin:48px 0 16px; }
+    .grid { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:16px; }
+    .card { background:var(--panel); border:1px solid #2d4660; border-radius:16px; padding:22px; }
+    .card h3 { color:var(--accent); margin:0 0 8px; }
+    .card p { color:var(--muted); margin:0; }
+    .flow { padding:20px; background:#10243b; border:1px solid #34526d; border-radius:14px; text-align:center; font-weight:600; }
+    footer { text-align:center; color:var(--muted); padding-bottom:42px; }
+    @media(max-width:700px) { .grid { grid-template-columns:1fr; } .slide { padding:38px 20px; min-height:300px; } header { flex-wrap:wrap; } }
+    @media(prefers-reduced-motion:reduce) { *,*::before,*::after { scroll-behavior:auto!important; } }
+  </style>
+</head>
+<body>
+  <header><div class="brand">CLOUD / DEVOPS</div><div class="tag">PROJECT 01 · AWS EC2</div></header>
+  <main>
+    <section class="hero" aria-labelledby="hero-title">
+      <div class="eyebrow">Hands-on cloud engineering</div>
+      <h1 id="hero-title">AWS Cloud Deployment Showcase</h1>
+      <p>A responsive static website and interactive carousel prepared for deployment on an Amazon EC2 Linux server. Built as a hands-on cloud infrastructure learning project.</p>
+      <div class="chips"><span>Amazon EC2</span><span>Linux</span><span>Web Hosting</span><span>HTML · CSS · JavaScript</span></div>
+    </section>
+    <section aria-label="Cloud engineering carousel" class="slider" aria-roledescription="carousel">
+      <article class="slide active" aria-label="Slide 1 of 3"><div class="symbol" aria-hidden="true">☁️</div><h2>Cloud Infrastructure</h2><p>Launch and configure a virtual server in the AWS cloud.</p></article>
+      <article class="slide" aria-label="Slide 2 of 3" hidden><div class="symbol" aria-hidden="true">🖥️</div><h2>Linux Web Hosting</h2><p>Serve a static website from a Linux-based EC2 instance.</p></article>
+      <article class="slide" aria-label="Slide 3 of 3" hidden><div class="symbol" aria-hidden="true">🔐</div><h2>Security & Operations</h2><p>Review inbound access, deployment checks and basic monitoring.</p></article>
+      <div class="controls"><button type="button" id="prev" aria-label="Previous slide">← Previous</button><span id="counter" aria-live="polite">1 / 3</span><button type="button" id="next" aria-label="Next slide">Next →</button></div>
+    </section>
+    <h2 class="section-title">Project overview</h2>
+    <section class="grid" aria-label="Project components">
+      <div class="card"><h3>01 · Build</h3><p>Create a responsive website using standard web technologies.</p></div>
+      <div class="card"><h3>02 · Deploy</h3><p>Publish the website to a Linux virtual machine hosted on AWS EC2.</p></div>
+      <div class="card"><h3>03 · Validate</h3><p>Check connectivity, browser rendering, and the security configuration.</p></div>
+    </section>
+    <h2 class="section-title">Architecture</h2>
+    <div class="flow">Visitor's browser → Internet → AWS EC2 → Web server → Static website</div>
+  </main>
+  <footer>Project 01 · AWS Cloud & DevOps Portfolio · Demonstration website</footer>
+  <script>
+    const slides = Array.from(document.querySelectorAll('.slide'));
+    const counter = document.getElementById('counter');
+    let current = 0;
+    function showSlide(index) {
+      current = (index + slides.length) % slides.length;
+      slides.forEach((slide, i) => {
+        const active = i === current;
+        slide.classList.toggle('active', active);
+        slide.hidden = !active;
+      });
+      counter.textContent = `${current + 1} / ${slides.length}`;
+    }
+    document.getElementById('prev').addEventListener('click', () => showSlide(current - 1));
+    document.getElementById('next').addEventListener('click', () => showSlide(current + 1));
+  </script>
+</body>
+</html>
